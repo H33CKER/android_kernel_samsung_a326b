@@ -1,0 +1,35 @@
+name: Build Kernel
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  build:
+    name: Build ARM64 Kernel
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential bc bison flex libssl-dev curl wget git ccache python3
+
+      - name: Make build script executable
+        run: chmod +x build_kernel.sh
+
+      - name: Run kernel build
+        run: ./build_kernel.sh
+
+      - name: Upload built Image
+        if: success() && hashFiles('out/arch/arm64/boot/Image')
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel-image
+          path: out/arch/arm64/boot/Image
