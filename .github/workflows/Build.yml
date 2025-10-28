@@ -22,10 +22,10 @@ jobs:
           sudo apt install -y build-essential bc bison flex libssl-dev curl wget git ccache python3
 
       - name: Make build script executable
-        run: chmod +x build_kernel.sh
+        run: chmod +x build.sh
 
       - name: Run kernel build
-        run: ./build_kernel.sh
+        run: ./build.sh
 
       - name: Upload built Image
         if: success() && hashFiles('out/arch/arm64/boot/Image')
